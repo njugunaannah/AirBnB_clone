@@ -2,6 +2,7 @@
 """Defines the functions of the console."""
 import cmd
 import re
+import json
 from shlex import split
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
