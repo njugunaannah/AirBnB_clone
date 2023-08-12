@@ -45,10 +45,12 @@ class BaseModel:
         else:
             self.id = str(uuid4())
             self.created_at = datetime.utcnow()
+
     def to_dict(self):
         """ Serialization logic here
         """
         pass
+
     def __set_attributes(self, attr_dict):
         """
             private: converts attr_dict values to python class attributes
@@ -79,7 +81,7 @@ class BaseModel:
         try:
             obj_to_str = json.dumps(obj_v)
             return obj_to_str is not None and isinstance(obj_to_str, str)
-        except:
+        except(TypeError, ValueError):
             return False
 
     def bm_update(self, attr_dict=None):
