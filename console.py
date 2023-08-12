@@ -60,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
             "show": self.do_show,
             "destroy": self.do_destroy,
             "count": self.do_count,
-            "update": self.do_update
+            "update": self.do_update,
             "help": self.do_help,
             "quit": self.do_quit,
             "exit": self.do_quit
