@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Outlines the BaseModel class."""
 import models
+from models import storage
 from uuid import uuid4
 from datetime import datetime
 from models.engine import file_storage
