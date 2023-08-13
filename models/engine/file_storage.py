@@ -20,6 +20,14 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
+    def _serialize_obj(self, obj):
+        # Serialize the object to a JSON string
+        return json.dumps(obj.to_dict())
+
+    def _deserialize_obj(self, obj_type, obj_data):
+        # Deserialize the JSON string and create an object
+        return obj_type(**json.loads(obj_data))
+
     def all(self):
         """Return the dictionary __objects."""
         return FileStorage.__objects
