@@ -49,7 +49,7 @@ class BaseModel:
     def to_dict(self):
         """ Serialization logic here
         """
-         pass
+        pass
 
     def __set_attributes(self, attr_dict):
         """
