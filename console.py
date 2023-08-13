@@ -50,6 +50,11 @@ class HBNBCommand(cmd.Cmd):
         "Review"
     }
 
+    def __init__(self):
+        super().__init__()
+        self.storage = FileStorage()
+        self.storage.reload()
+
     def emptyline(self):
         """ Nothing happens if imput is an empty line."""
         pass
@@ -127,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
         """Usage: destroy <class> <id> or <class>.destroy(<id>)
         Deletes a given class id."""
         argl = parse(arg)
-        objdict = storage.all()
+        objdict = self.storage.all()
         if len(argl) == 0:
             print("** class name missing **")
         elif argl[0] not in HBNBCommand.__classes:
@@ -149,7 +154,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             objl = []
-            for obj in storage.all().values():
+            for obj in self.storage.all().values():
                 if len(argl) > 0 and argl[0] == obj.__class__.__name__:
                     objl.append(obj.__str__())
                 elif len(argl) == 0:
