@@ -70,21 +70,6 @@ class HBNBCommand(cmd.Cmd):
     def _precmd(self, line):
         """Intercepts commands to test for class.syntax()"""
         # print("PRECMD:::", line)
-        match = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", line)
-        if not match:
-            return line
-        classname = match.group(1)
-        method = match.group(2)
-        args = match.group(3)
-        match_uid_and_args = re.search('^"([^"]*)"(?:, (.*))?$', args)
-        if match_uid_and_args:
-            uid = match_uid_and_args.group(1)
-            attr_or_dict = match_uid_and_args.group(2)
-        else:
-            uid = args
-            attr_or_dict = False
-
-        attr_and_value = ""
         if method == "update" and attr_or_dict:
             match_dict = re.search('^({.*})$', attr_or_dict)
             if match_dict:
@@ -93,10 +78,10 @@ class HBNBCommand(cmd.Cmd):
             match_attr_and_value = re.search(
                 '^(?:"([^"]*)")?(?:, (.*))?$', attr_or_dict)
             if match_attr_and_value:
-                attr_and_value = (match_attr_and_value.group(
-                    1) or "") + " " + (match_attr_and_value.group(2) or "")
+                attr_and_value = (
+                    match_attr_and_value.group(1) or "") + " " + (
+                    match_attr_and_value.group(2) or "")
         command = method + " " + classname + " " + uid + " " + attr_and_value
-        self.onecmd(command)
         return command
 
     def do_quit(self, arg):
@@ -187,47 +172,17 @@ class HBNBCommand(cmd.Cmd):
        <class>.update(<id>, <dictionary>)
         Updates current data of a given id including adding or updating
         attribute's value pair or dictionary."""
-        argl = parse(arg)
         objdict = storage.all()
-
-        if len(argl) == 0:
-            print("** class name missing **")
-            return False
-        if argl[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
-            return False
-        if len(argl) == 1:
-            print("** instance id missing **")
-            return False
-        if "{}.{}".format(argl[0], argl[1]) not in objdict.keys():
+        if "{}.{}".format(classname, uid) not in objdict.keys():
             print("** no instance found **")
-            return False
-        if len(argl) == 2:
-            print("** attribute name missing **")
-            return False
-        if len(argl) == 3:
-            try:
-                type(eval(argl[2])) != dict
-            except NameError:
-                print("** value missing **")
-                return False
-
-        if len(argl) == 4:
-            obj = objdict["{}.{}".format(argl[0], argl[1])]
-            if argl[2] in obj.__class__.__dict__.keys():
-                valtype = type(obj.__class__.__dict__[argl[2]])
-                obj.__dict__[argl[2]] = valtype(argl[3])
+            return
+        obj = objdict["{}.{}".format(classname, uid)]
+        for key, value in json.loads(attr_dict).items():
+            if key in obj.__class__.__dict__.keys():
+                valtype = type(obj.__class__.__dict__[key])
+                obj.__dict__[key] = valtype(value)
             else:
-                obj.__dict__[argl[2]] = argl[3]
-        elif type(eval(argl[2])) == dict:
-            obj = objdict["{}.{}".format(argl[0], argl[1])]
-            for k, v in eval(argl[2]).items():
-                if (k in obj.__class__.__dict__.keys() and
-                        type(obj.__class__.__dict__[k]) in {str, int, float}):
-                    valtype = type(obj.__class__.__dict__[k])
-                    obj.__dict__[k] = valtype(v)
-                else:
-                    obj.__dict__[k] = v
+                obj.__dict__[key] = value
         storage.save()
 
 
